@@ -10,7 +10,7 @@ import {DIM, FG_BLUE, FG_RED, FG_GREEN, FG_YELLOW, UNDERLINE, RESET} from '@coba
 import chokidar from 'chokidar';
 import fs from 'node:fs';
 import {performance} from 'node:perf_hooks';
-import {fileURLToPath, URL} from 'node:url';
+import {fileURLToPath, pathToFileURL, URL} from 'node:url';
 import parser from 'yargs-parser';
 import {init as initConfig} from '../dist/config.js';
 import {build} from '../dist/build.js';
@@ -232,7 +232,7 @@ function resolveConfig(filename) {
 /** load config */
 async function loadConfig(configPath) {
   let userConfig = {};
-  if (configPath) userConfig = (await import(configPath instanceof URL ? fileURLToPath(configPath) : configPath)).default;
+  if (configPath) userConfig = (await import(typeof configPath === 'string' ? pathToFileURL(configPath) : configPath)).default;
   return await initConfig(userConfig, configPath instanceof URL ? configPath : `file://${process.cwd()}/`);
 }
 
